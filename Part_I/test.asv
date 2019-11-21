@@ -1,0 +1,8 @@
+[V, S] = PDE_bullspread(K1, K2, T, r, sigma, Smin, Smax, N, J);
+
+plot(S,V)
+hold on
+range = Smin:0.05:Smax;
+plot(range,true_price(range))
+xlabel('Stock price')
+ylabel('Option price')
