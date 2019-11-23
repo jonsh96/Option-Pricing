@@ -1,20 +1,13 @@
-S0 = 1:200;
-K1 = 90;
-K2 = 120;
-r = 0.05;
-sigma = 0.25;
-T = 0.5;
-N = size(S0,2);
-payoff = @(S) exp(-r*T)*(max(S-K1,0)-(max(S-K2,0)));
+set_parameters;
+
+S0 = linspace(1,200,N);
 sample_size = @(v) (sqrt(v)*1.96/0.05)^2;
-price_BS = mean(blsprice(S0,K1,r,T,sigma)-blsprice(S0,K2,r,T,sigma));
-
-
+price_BS = mean(bullspread(S0));
 M = 1000;
 time = zeros(M,4);
 price = zeros(M,4);
 variance = zeros(M,4);
-error = zeros(M,4);
+errors = zeros(M,4);
 sample_size_mc = zeros(1,4);
 
 % Naive method
@@ -24,7 +17,7 @@ for i = 1:1000
     ST = S0.*exp((r-0.5*sigma^2)*T+sigma*sqrt(T).*X);
     price(i,1) = mean(payoff(ST));
     variance(i,1) = var(payoff(ST));
-    error(i,1) = price_BS - price(i,1);
+    errors(i,1) = price_BS - price(i,1);
     time(i,1) = cputime-start;
 end
 sample_size_mc(1) = sample_size(mean(variance(:,1)));
@@ -38,7 +31,7 @@ for i = 1:M
     Z = (payoff(Splus)+payoff(Sminus))/2;
     price(i,2) = mean(Z);
     variance(i,2) = var(Z);
-    error(i,2) = price_BS - price(i,2);
+    errors(i,2) = price_BS - price(i,2);
     time(i,2) = cputime-start;
 end
 sample_size_mc(2) = sample_size(mean(variance(:,2)));
@@ -56,7 +49,7 @@ for i = 1:M
     fc = payoff(ST)-c.*(g(ST)-gm);
     price(i,3) = mean(fc);
     variance(i,3) = var(fc);
-    error(i,3) = price_BS - price(i,3);
+    errors(i,3) = price_BS - price(i,3);
     time(i,3) = cputime-start;
 end
 sample_size_mc(3) = sample_size(mean(variance(:,3)));
@@ -71,17 +64,10 @@ for i = 1:M
     ST(ST==Inf)=0;
     price(i,4) = mean((1-y0)*mean(payoff(ST)));
     variance(i,4) = mean((1-y0).^2*var(payoff(ST)));
-    error(i,4) = price_BS - price(i,4);
+    errors(i,4) = price_BS - price(i,4);
     time(i,4) = cputime-start;
 end
 sample_size_mc(4) = sample_size(mean(variance(:,4)));
-
-for i=1:4
-    plot(time(:,i))
-    hold on
-end
-
-compare_monte_carlo(price_BS, mean(price), mean(variance), mean(time), mean(error), sample_size_mc)
 
 
 

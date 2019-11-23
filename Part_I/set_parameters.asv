@@ -1,0 +1,14 @@
+% Initialising the variable
+format compact;
+
+K1 = 90;        % Strike price 1
+K2 = 120;       % Strike price 2
+T = 6/12;       % Maturity
+dt = T/250;     % Size of time increments
+r = 0.03;       % (Constant) Risk free interest rates
+sigma = 0.25;   % (Constant) Volatility of stock
+
+Smin = 1;
+Smax = 500;
+
+N = 130;        % Initial "guess", 
