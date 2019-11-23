@@ -1,0 +1,120 @@
+%% 1. For a European call option implement the algorithms in the lecture notes for:
+%  (a) antithetic variance reduction
+%  (b) control variates
+%  (c) importance sampling
+
+S0 = 1:200;
+K1 = 90;
+K2 = 120;
+r = 0.05;
+sigma = 0.25;
+T = 0.5;
+N = size(S0,2);
+payoff = @(S) exp(-r*T)*(max(S-K1,0)-(max(S-K2,0)));
+sample_size = @(v) (sqrt(v).*1.96/0.05).^2;
+price_BS = mean(blsprice(S0,K1,r,T,sigma)-blsprice(S0,K2,r,T,sigma));
+
+
+M = 1000;
+time = zeros(M,4);
+price = zeros(M,4);
+variance = zeros(M,4);
+error = zeros(M,4);
+sample_size_mc = 
+
+% Naive method
+for i = 1:1000
+    time(i,1) = cputime;
+    X = rand(1,N);
+    ST = S0.*exp((r-0.5*sigma^2)*T+sigma*sqrt(T).*X);
+    price(i,1) = mean(payoff(ST));
+    variance(i,1) = var(payoff(ST));
+    error(i,1) = price_BS - price(i,1);
+    time(i,1) = cputime-time(i,1);
+end
+
+% disp("Naive method")
+% disp("-----------------------------")
+% fprintf("True price:\t\t\t%.4f\n", mean(price_BS))
+% fprintf("Calculated price:\t%.4f\n", mean(price(:,1)));
+% fprintf("Variance:\t\t\t%.4f \n", mean(variance(:,1)))
+% fprintf("Error in pricing:\t%.4f\n", mean(price(:,1))-mean(price_BS))
+% fprintf("Sample size needed:\t%.2f\n", sample_size(mean(variance(:,1))))
+% fprintf("CPU time elapsed:\t%.5f\n\n\n", mean(time(:,1)))
+
+% Antithetic variance reduction
+for i = 1:M
+    time(i,2) = cputime;
+    X = randn(1,N);
+    Splus = S0.*exp((r-0.5*sigma^2)*T+sigma*sqrt(T).*X);
+    Sminus = S0.*exp((r-0.5*sigma^2)*T-sigma*sqrt(T).*X);
+    Z = (payoff(Splus)+payoff(Sminus))/2;
+    price(i,2) = mean(Z);
+    variance(i,2) = var(Z);
+    error(i,2) = price_BS - price(i,2);
+    time(i,2) = cputime-time(i,2);
+end
+
+% disp("Antithetic variance reduction")
+% disp("-----------------------------")
+% fprintf("True price:\t\t\t%.4f\n", mean(price_BS))
+% fprintf("Calculated price:\t%.4f\n", mean(price(:,2)));
+% fprintf("Variance:\t\t\t%.4f \n", mean(variance(:,2)))
+% fprintf("Error in pricing:\t%.4f\n", mean(price(:,2))-mean(price_BS))
+% fprintf("Sample size needed:\t%.2f\n", sample_size(mean(variance(:,2))))
+% fprintf("CPU time elapsed:\t%.5f\n\n\n", mean(time(:,2)))
+
+% Control variates
+g = @(S) S;
+
+for i = 1:M
+    time(3,i) = cputime;
+    gm = S0.*exp(r*T);
+    gv = S0.^2.*exp(2*r*T)*(exp(sigma^2*T)-1);
+    ST = S0.*exp((r-0.5*sigma^2)*T+sigma*sqrt(T).*X);
+    covariance_matrix = cov(payoff(ST),ST);
+    c = covariance_matrix(1,2)/var(ST);
+    fcv = var(payoff(ST))*(1-(covariance_matrix(1,2))^2/(var(payoff(ST))*var(g(ST))));
+    fc = payoff(ST)-c.*(g(ST)-gm);
+    price(i,3) = mean(fc);
+    variance(i,3) = var(fc);
+    error(i,3) = price_BS - price(i,3);
+    time(i,3) = cputime-time(i,3);
+end
+% 
+% disp("Control variates")
+% disp("-----------------------------")
+% fprintf("True price:\t\t\t%.4f\n", mean(price_BS))
+% fprintf("Calculated price:\t%.4f\n", mean(price(3,:)))
+% fprintf("Variance:\t\t\t%.4f \n", mean(variance(3,:)))
+% fprintf("Error in pricing:\t%.4f\n", mean(price(3,:))-mean(price_BS))
+% fprintf("Sample size needed:\t%.2f\n", sample_size(mean(variance(3,:))))
+% fprintf("CPU time elapsed:\t%.5f\n\n\n", mean(time(3,:)))
+
+% Importance sampling
+for i = 1:M
+    time(i,4) = cputime;
+    y0 = normcdf((log(K1./S0)-(r-0.5*sigma^2)*T)/(sigma*sqrt(T)));
+    Y = y0 + (1-y0).*rand(1,N);
+    X = norminv(Y);
+    ST = S0.*exp((r-0.5*sigma^2)*T+sigma*sqrt(T).*X);
+    ST(ST==Inf)=0;
+    price(i,4) = mean((1-y0)*mean(payoff(ST)));
+    variance(i,4) = mean((1-y0).^2*var(payoff(ST)));
+    error(i,4) = price_BS - price(i,4);
+    time(i,4) = cputime-time(i,4); 
+end
+% 
+% disp("Importance sampling")
+% disp("-----------------------------")
+% fprintf("True price:\t\t\t%.4f\n", mean(price_BS))
+% fprintf("Calculated price:\t%.4f\n", mean(price(4,:)))
+% fprintf("Variance:\t\t\t%.4f \n", mean(variance(4,:)))
+% fprintf("Error in pricing:\t%.4f\n", mean(price(4,:))-mean(price_BS))
+% fprintf("Sample size needed:\t%.2f\n", sample_size(mean(variance(4,:))))
+% fprintf("CPU time elapsed:\t%.5f\n\n\n", mean(time(4,:)))
+
+compare_monte_carlo(price_BS, mean(price), mean(variance), mean(time), mean(error), sample_size(mean(variance)))
+
+
+
