@@ -1,0 +1,21 @@
+function [S, price] = simulate_geometric_bm(S0, rate, volatility, dt, T)
+    set_parameters;
+    N = T/dt;
+    S = zeros(N,1);
+    S(1) = S0;
+    dS = zeros(N,1);
+    dW = sqrt(dt)*randn(N,1);
+    
+    if(isa(rate,'function_handle') && isa(volatility,'function_handle'))
+        for i = 2:N
+            dS(i-1) = rate((i-1)*dt)*S(i-1)*dt+volatility(S(i-1),(i-1)*dt)*S(i-1)*dW(i-1);
+            S(i) = S(i-1) + dS(i-1);
+        end
+    else
+        for i = 2:N
+            dS(i-1) = rate(0)*S(i-1)*dt+sigma(1)*dt)*S(i-1)*dW(i-1);
+            S(i) = S(i-1) + dS(i-1);
+        end
+    price = mean(mean(payoff(S)));
+end
+

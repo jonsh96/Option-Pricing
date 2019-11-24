@@ -1,6 +1,4 @@
 set_parameters;
-% Here I am working under the assumption that the time step is T
-
 sample_size = @(v) (sqrt(v)*1.96/0.05)^2;
 
 M = 1000;
@@ -9,19 +7,21 @@ variance = zeros(3,M);
 errors = zeros(3,M);
 time = zeros(3,M);
 
-S0 = linspace(1,100,N);
+S = zeros(Smax, M);
+
+% TODO:
+% - Simulate M times for S0 = 1:100???
+
+
 % Naive method
 dW = sqrt(dt)*randn(1,M);
-for i = 1:M
-    start = cputime;
-    S = ones(1,N)*S;
-    for j = 1:N
-        dS(j) = rate(j*dt)*S(j-1)*dt + volatility(S(j-1),j*dt)*S(j-1)*dW(i,j-1);
-        S(j) = S(j-1) + dS(j);
+for S0 = Smin:Smax
+    for i = 1:M
+        start = cputime;
+        [S(S0,:), price] = simulate_geometric_bm(S0, r, sigma, N, T);
+        variance(i,1) = var(payoff(ST));
+        time(i,1) = cputime-start;
     end
-    price(i,1) = mean(payoff(ST));
-    variance(i,1) = var(payoff(ST));
-    time(i,1) = cputime-start;
 end
 sample_size_mc(1) = sample_size(mean(variance(:,1)));
 

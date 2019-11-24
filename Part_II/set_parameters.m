@@ -3,7 +3,7 @@
 K = 50;     % Strike price
 T = 1;      % Maturity
 N = 260;    % Number of trading/working days in a year
-dt = T/N;   % Size of each time increment (in years)
+
 Smin = 1;
 Smax = 100;
 
