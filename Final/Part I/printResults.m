@@ -4,7 +4,7 @@ function printResults(times, prices, variances, errors, sample_sizes)
     price = mean(prices');
     variance = mean(variances');
     error = mean(errors');
-    sizes = ceil(sample_sizes');
+    sizes = ceil(max(sample_sizes'));
     true_price = mean(BS_bullspread(Smin:Smax));
     
     disp("---------------------------------------------------------------------------------------------------")

@@ -13,9 +13,9 @@ function plotComparison(S, V_PDE, V_BS)
     
     disp('Plotting the comparison of the numerical solution and the Black-Scholes solution')
     figure
-    plot(S,V_PDE,'b-')
+    scatter(S,V_PDE,'r','filled')
     hold on
-    plot(S,V_BS,'r*')
+    plot(S,V_BS,'r--')
     grid on
     xlabel('Stock price (£)','FontSize',14)
     ylabel('Option price (£)','FontSize',14)
