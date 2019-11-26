@@ -7,6 +7,7 @@ for N = 1:200
         error(N,J) = norm(V_BS-V_PDE,Inf);
     end
 end
+
 mesh(1:200, 1:200, error)
 xlabel('Number of time steps','FontSize',14)
 ylabel('Number of grid points','FontSize',14)

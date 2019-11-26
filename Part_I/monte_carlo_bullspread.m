@@ -1,8 +1,9 @@
 set_parameters;
 
-S0 = linspace(1,200,N);
+S0 = linspace(Smin,Smax,N);
 sample_size = @(v) (sqrt(v)*1.96/0.05)^2;
 price_BS = mean(bullspread(S0));
+
 M = 1000;
 time = zeros(M,4);
 price = zeros(M,4);
@@ -11,7 +12,7 @@ errors = zeros(M,4);
 sample_size_mc = zeros(1,4);
 
 % Naive method
-for i = 1:1000
+for i = 1:M
     start = cputime;
     X = rand(1,N);
     ST = S0.*exp((r-0.5*sigma^2)*T+sigma*sqrt(T).*X);
