@@ -7,9 +7,9 @@ T = 6/12;       % Maturity
 dt = T/250;     % Size of time increments
 r = 0.03;       % (Constant) Risk free interest rates
 sigma = 0.25;   % (Constant) Volatility of stock
-N = 130;        % Initial "guess", number of trading/working days in 6 months
+N = 13;         % Initial "guess", number of trading/working days in 6 months
 Smin = 1;       % Minimum initial price
-Smax =  200;     % Maximum initial price
+Smax =  200;    % Maximum initial price
 
 % Defining the payoff function for convenience
 BS_bullspread = @(S) blsprice(S, K1, r, T, sigma) - blsprice(S, K2, r, T, sigma);  

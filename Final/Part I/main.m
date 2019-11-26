@@ -19,9 +19,8 @@ plotMonteCarlo(Smin, Smax, prices)
 
 % Printing the results
 printResults(times, prices, variances, errors, sample_sizes);
-% TODO: DELTA STUFF
 
-% compare_monte_carlo(price_BS, mean(price), mean(variance), mean(time), mean(errors), sample_size_mc)
-% 
-% 
-% % DELTA FOR MONTE CARLO
+% TODO: 
+% - DELTA STUFF
+% - COMMENTS
+% - BUGFIX VARIANCE

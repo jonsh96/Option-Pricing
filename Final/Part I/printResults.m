@@ -7,7 +7,6 @@ function printResults(times, prices, variances, errors, sample_sizes)
     sizes = ceil(sample_sizes');
     true_price = mean(BS_bullspread(Smin:Smax));
     
-    disp()
     disp("---------------------------------------------------------------------------------------------------")
     fprintf("\t\t\t\t\tNaive method\tAntithetic variance\t\tControl Variate \tImportance sampling\n")
     disp("---------------------------------------------------------------------------------------------------")
