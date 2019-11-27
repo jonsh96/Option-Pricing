@@ -1,4 +1,4 @@
-function J = minimizeAbsError(K1, K2, T, r, sigma, Smin, Smax, N)
+function J = minimizeAbsError(K1, K2, T, r, sigma, Smin, Smax, N, BS_bullspread)
     % INPUTS: 
     %   - K1:    Strike price of the long call option
     %   - K2:    Strike price of the short call option
@@ -18,7 +18,6 @@ function J = minimizeAbsError(K1, K2, T, r, sigma, Smin, Smax, N)
     % 
     % AUTHOR: 
     %   - Jón Sveinbjörn Halldórsson 22/11/2019
-    set_parameters;
     
     disp("Finding J such that the absolute error of ||V_PDE - V_BS|| < 0.05")
     % Set the initial error value to infinity to start the while-loop looking for 
@@ -26,8 +25,8 @@ function J = minimizeAbsError(K1, K2, T, r, sigma, Smin, Smax, N)
     % Make an initial guess about the value of J 
     J = round(N/10);
     
-    % Run the while loop until the error is <= 0.05
-    while(error > 0.05)
+    % Run the while loop until the error is < 0.05
+    while(error >= 0.05)
         % J increases by one with every iteration
         J = J+1;    
         % Compare the values of the numerical solution with the

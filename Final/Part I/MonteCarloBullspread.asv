@@ -30,34 +30,33 @@ function [times, prices, variances, errors, sample_sizes] = MonteCarloBullspread
         variances(1,i) = var(payoff(ST(i,:)));
         errors(1,i) = BS_bullspread(i) - prices(1,i);   
     end
-    times(1) = (cputime-start)/Smax;
+    times(1) = cputime-start);
     sample_sizes(1,:) = confidence_sample(variances(1,:));
 
     % Antithetic variance reduction
-    start = cputime;
-
     Splus = zeros(Smax,M);
     Sminus = zeros(Smax,M);
     dW = sqrt(T)*randn(Smax,M);
     for i = 1:Smax
+        start = cputime;
         Splus(i,:) = S0(i)*exp((r-0.5*sigma^2)*T+sigma.*dW(i,:)); 
         Sminus(i,:) = S0(i)*exp((r-0.5*sigma^2)*T-sigma.*dW(i,:)); 
         Z = (payoff(Splus(i,:))+payoff(Sminus(i,:)))/2;
         prices(2,i) = mean(Z);
         variances(2,i) = var(Z);
         errors(2,i) = BS_bullspread(i) - prices(2,i);   % bullspread -> BS_payoff
+        times(2,i) = cputime-start;
     end
-    times(2) = (cputime-start)/Smax;
     sample_sizes(2,:) = confidence_sample(variances(2,:));
 
 
     % Control variates
-    start = cputime;
     g = @(S) S;
     f = @(S) payoff(S);
     dW = sqrt(T)*randn(Smax);
 
     for i = 1:Smax
+        start = cputime;
         gm = S0(i)*exp(r*T);
 %         gv = S0(i)^2*exp(2*r*T)*(exp(sigma^2*T)-1);
         
@@ -69,15 +68,15 @@ function [times, prices, variances, errors, sample_sizes] = MonteCarloBullspread
         
         prices(3,i) = mean(fc);
         variances(3,i) = var(fc);
+        times(3,i) = cputime-start;
         errors(3,i) = BS_bullspread(i) - prices(3,i);
+        times(3,i) = cputime-start;
     end
-    times(3) = (cputime-start)/Smax;
-
-    sample_sizes(3,:) = confidence_sample(variances(3,:));
+    sample_sizes(3,:) = confidence_sample(variances(3,:));    
 
     % Importance sampling
-    start = cputime;
     for i = 1:Smax
+        start = cputime;
         y0 = normcdf((log(K1/S0(i))-(r-0.5*sigma^2)*T)/(sigma*sqrt(T)));
         Y = y0 + (1-y0)*rand(1,M);
         X = norminv(Y);
@@ -87,8 +86,8 @@ function [times, prices, variances, errors, sample_sizes] = MonteCarloBullspread
         prices(4,i) = mean(fST);
         variances(4,i) = var(fST);
         errors(4,i) = BS_bullspread(i) - prices(4,i);
+        times(4,i) = cputime-start;
     end
-    times(4) = (cputime-start)/Smax;
     sample_sizes(4,:) = confidence_sample(variances(4,:));
     
 end

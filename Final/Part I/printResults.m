@@ -1,21 +1,16 @@
-function printResults(times, prices, variances, errors, sample_sizes)
-    set_parameters;
-    time = mean(times');
-    price = mean(prices');
-    variance = mean(variances');
-    error = mean(errors');
+function printResults(times, variances, errors, sample_sizes)
+    time = times';
+    variance = max(variances');
+    error = max(errors');
     sizes = ceil(max(sample_sizes'));
-    true_price = mean(BS_bullspread(Smin:Smax));
     
-    disp("---------------------------------------------------------------------------------------------------")
-    fprintf("\t\t\t\t\tNaive method\tAntithetic variance\t\tControl Variate \tImportance sampling\n")
-    disp("---------------------------------------------------------------------------------------------------")
-    fprintf("True price:\t\t\t%.4f\t\t\t%.4f\t\t\t\t\t%.4f\t\t\t\t%.4f\n", true_price, true_price, true_price, true_price)
-    fprintf("Calculated price:\t%.4f\t\t\t%.4f\t\t\t\t\t%.4f\t\t\t\t%.4f\n", price(1), price(2), price(3), price(4))
-    fprintf("Variance:\t\t\t%.4f\t\t\t%.4f\t\t\t\t\t%.4f\t\t\t\t%.4f\n", variance(1), variance(2), variance(3), variance(4))
-    fprintf("Error in pricing:\t%.4f\t\t\t%.4f\t\t\t\t\t%.4f\t\t\t\t%.4f\n", error(1), error(2), error(3), error(4))
-    fprintf("Sample size needed:\t%d\t\t\t%d\t\t\t\t\t%d\t\t\t\t%d\n", sizes(1), sizes(2), sizes(3), sizes(4))
-    fprintf("CPU time elapsed:\t%.4f\t\t\t%.4f\t\t\t\t\t%.4f\t\t\t\t%.4f\n", time(1), time(2), time(3), time(4))
+    disp("-----------------------------------------------------------------------------------------------------------")
+    fprintf("\t\t\t\t\t\t\tNaive method\tAntithetic variance\t\tControl Variate \tImportance sampling\n")
+    disp("-----------------------------------------------------------------------------------------------------------")
+    fprintf("Maximum variance:\t\t\t%.4f\t\t%.4f\t\t\t\t\t%.4f\t\t\t\t%.4f\n", variance(1), variance(2), variance(3), variance(4))
+    fprintf("Maximum error in pricing:\t%.4f\t\t\t%.4f\t\t\t\t\t%.4f\t\t\t\t%.4f\n", error(1), error(2), error(3), error(4))
+    fprintf("Maximum sample size needed:\t%d\t\t\t%d\t\t\t\t\t%d\t\t\t\t%d\n", sizes(1), sizes(2), sizes(3), sizes(4))
+    fprintf("Average CPU time elapsed:\t%.4f\t\t\t%.4f\t\t\t\t\t%.4f\t\t\t\t%.4f\n", time(1), time(2), time(3), time(4))
 
     
     % Table for LaTeX

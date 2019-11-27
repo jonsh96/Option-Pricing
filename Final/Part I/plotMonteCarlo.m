@@ -1,4 +1,4 @@
-function plotMonteCarlo(Smin, Smax, prices)
+function plotMonteCarlo(Smin, Smax, prices, BS_bullspread)
     % INPUTS: BREYTA ÞESSUUUUUUUUUUUUUUUUUU
     %   - S:     Range of stock prices
     %   - V_PDE: Numerical solution of option prices as a function of stock price 
@@ -10,8 +10,7 @@ function plotMonteCarlo(Smin, Smax, prices)
     % ABOUT: 
     %   - Plots a comparison of the option prices derived from the
     %     numerical solution and the Black-Scholes formula
-    set_parameters;
-    disp('Plotting the comparison of the different Monte Carlo methods')
+    
     figure
     plot(Smin:Smax,prices(1,:),'o')
     hold on
@@ -22,5 +21,6 @@ function plotMonteCarlo(Smin, Smax, prices)
     grid on
     xlabel('Stock price (£)','FontSize',14)
     ylabel('Option price (£)','FontSize',14)
+    ylim([min(min(prices)) max(max(prices))*1.2])
     legend('Naive method','Antithetic variance reduction', 'Control variate','Importance sampling','Black-Scholes solution','FontSize',14)
 end 

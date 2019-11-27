@@ -13,5 +13,5 @@ Smin = 1;
 Smax = 500;
 
 % Defining the payoff function for convenience
-bullspread = @(S) blsprice(S, K1, r, T, sigma)-blsprice(S, K2, r, T, sigma);
+BS_bullspread = @(S) blsprice(S, K1, r, T, sigma)-blsprice(S, K2, r, T, sigma);
 payoff = @(S) max(S-K1,0)-max(S-K2,0);

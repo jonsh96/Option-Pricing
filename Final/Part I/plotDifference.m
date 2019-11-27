@@ -1,4 +1,4 @@
-function plotDifference(Smin, Smax, prices, p)
+function plotDifference(Smin, Smax, prices, p, BS_bullspread)
     % INPUTS: BREYTA ÞESSUUUUUUUUUUUUUUUUUU
     %   - S:     Range of stock prices
     %   - V_PDE: Numerical solution of option prices as a function of stock price 
@@ -10,10 +10,8 @@ function plotDifference(Smin, Smax, prices, p)
     % ABOUT: 
     %   - Plots a comparison of the option prices derived from the
     %     numerical solution and the Black-Scholes formula
-    set_parameters;
-%     disp('Plotting the comparison of the different Monte Carlo methods')
-%     figure
-    scatter(Smin:Smax,prices(p,:),'r','filled')
+
+    scatter(Smin:Smax,prices(p,Smin:Smax),'r','filled')
     hold on
     plot(Smin:Smax,BS_bullspread(Smin:Smax),'k-','LineWidth',1.5)
     grid on

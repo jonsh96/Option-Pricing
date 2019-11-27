@@ -1,0 +1,26 @@
+function plotResults(times, prices, variances, errors, sample_sizes)
+   % INPUTS: 
+    %   - times:        
+    %   - prices:       Strike price of the short call option
+    %   - variances:    Time to maturity (in years)
+    %   - errors:       Risk free interest rates (in decimals)
+    %   - sample_sizes: Volatility (in decimals)
+    %   - Smin:  Lowest value of the stock price
+    %   - Smax:  Highest value of the stock price
+    %   - N:     Number of time steps
+    %   
+    % OUTPUTS: 
+    %   - J:     Number of grid points
+    % 
+    % ABOUT: 
+    %   - Finds J for a given value of N such that the absolute error < 0.05, i.e. 
+    %                          ||V_PDE - V_BS|| < 0.05
+    % 
+    % AUTHOR: 
+    %   - Jón Sveinbjörn Halldórsson 22/11/2019
+    for i = 1:4
+        plot(sample_sizes(i,:))
+        hold on
+    end
+
+end
