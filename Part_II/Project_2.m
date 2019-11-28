@@ -4,7 +4,7 @@ set_parameters;
 
 price = zeros(1,100);
 for i = 1:100
-    S = geometric_brownian_motion(i, r, sigma, N, T);
+    S = geometric_brownian_motion(i, r, sigma, dt, T);
     price(i) = payoff(S(end));
 end
 S = 1:100;
