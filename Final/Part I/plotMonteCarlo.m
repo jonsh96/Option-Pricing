@@ -12,11 +12,10 @@ function plotMonteCarlo(Smin, Smax, prices, BS_bullspread)
     %     numerical solution and the Black-Scholes formula
     
     figure
-    plot(Smin:Smax,prices(1,:),'o')
-    hold on
-    plot(Smin:Smax,prices(2,:),'o')
-    plot(Smin:Smax,prices(3,:),'o')
-    plot(Smin:Smax,prices(4,:),'o')
+    for i = 1:4
+        scatter(Smin:Smax,prices(i,:),'filled')
+        hold on
+    end
     plot(Smin:Smax,BS_bullspread(Smin:Smax),'k-','LineWidth',1.5)
     grid on
     xlabel('Stock price (£)','FontSize',14)

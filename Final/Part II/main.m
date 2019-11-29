@@ -1,25 +1,47 @@
 %% Initialising the parameters
-set_parameters;
+SetParameters;
 
 %% Pricing a put option using stochastic interest rates and a local volatility model
-price = zeros(Smax, 9);
-variance = zeros(Smax, 9);
-error = zeros(Smax, 9);
-sample_size = zeros(Smax, 9);
-time = zeros(1, 9);
+price = zeros(Smax, 3);
+variance = zeros(Smax, 3);
+error = zeros(Smax, 3);
+sample_size = zeros(Smax, 3);
+time = zeros(1, 3);
 
-% Naive method
-[price(:,1), variance(:,1), error(:,1), sample_size(:,1), time(1)] = run_NaiveMethod(Smin, Smax, dt, T, put_payoff, rate, volatility)
+methods = ["Naive", "Antithetic variance reduction", "Control variates"];
 
-% Antithetic variance reduction
-[price(:,2), variance(:,2), error(:,2), sample_size(:,2), time(2)] = run_AntitheticVarianceReduction(Smin, Smax, dt, T, put_payoff, rate, volatility)
-
-% Control variates
-[price(:,3), variance(:,3), error(:,3), sample_size(:,3), time(3)] = run_AntitheticVarianceReduction(Smin, Smax, dt, T, put_payoff, rate, volatility)
+for i = 1:3
+    [price(:,i), variance(:,i), error(:,i), sample_size(:,i), time(i)] = MonteCarlo(Smin, Smax, dt, T, methods(i), barrier_payoff, rate, volatility);
+end
+plot(price(:,1))
+hold on
+plot(price(:,2))
+plot(price(:,3))
+fprintf('Pricing a put option using stochastic interest rates and a local volatility model\n')
+PrintResults(time, variance, error, sample_size)
+%%
+for S0 = 1:100
+   plot(S0, barrier_payoff(S0),'ro')
+   hold on
+end
 
 %% Pricing a put option using constant interest rates and a local volatility model
-Sb = 30;
+price = zeros(Smax, 3);
+variance = zeros(Smax, 3);
+error = zeros(Smax, 3);
+sample_size = zeros(Smax, 3);
+time = zeros(1, 3);
 
+methods = ["Naive", "Antithetic variance reduction", "Control variates"];
+
+for i = 1:3
+    [price(:,i), variance(:,i), error(:,i), sample_size(:,i), time(i)] = MonteCarlo(Smin, Smax, dt, T, methods(i), put_payoff, rate, volatility);
+end
+
+fprintf('Pricing a put option using constant interest rates and volatility \n')
+PrintResults(time, variance, error, sample_size)
+
+%%
 % Naive method
 start = cputime;
 for i = Smin:Smax

@@ -38,7 +38,7 @@ function [U, x, t] = heat_CN(u0, gmin, gmax, t_f, xmin, xmax, N, J)
     I_dtL_sup = - dtL_sup  ;
     I_dtL_diag = ones(J+1,1) - dtL_diag;
     I_dtL_sub = - dtL_sub;
-% 
+    
 %     % Generate a (J+1) x (J+1) matrix for the implicit part of the time step.
 %     % (This is not efficient and will be improved next week.)
 %     I_dtL = diag(I_dtL_diag) + diag(I_dtL_sup,1) + diag(I_dtL_sub,-1);

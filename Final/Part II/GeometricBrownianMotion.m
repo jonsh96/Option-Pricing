@@ -1,4 +1,4 @@
-function [S, Splus, Sminus] = geometric_brownian_motion(S0, r, volatility, dt, T)
+function [S, Splus, Sminus] = GeometricBrownianMotion(S0, rate, volatility, dt, T)
     
     N = T/dt;
     S = zeros(1,N);
@@ -11,16 +11,16 @@ function [S, Splus, Sminus] = geometric_brownian_motion(S0, r, volatility, dt, T
     
     dW = sqrt(dt)*randn(1,N);
     
-    if(isa(r,'function_handle') && isa(volatility,'function_handle'))
+    if(isa(rate,'function_handle') && isa(volatility,'function_handle'))
         for i = 2:N
-            dS = r((i-1)*dt)*S(i-1)*dt+volatility(S(i-1),(i-1)*dt)*S(i-1)*dW(i-1);
+            dS = rate((i-1)*dt)*S(i-1)*dt+volatility(S(i-1),(i-1)*dt)*S(i-1)*dW(i-1);
             S(i) = S(i-1) + dS;
             Splus(i) = S(i-1) + dS;
             Sminus(i) = S(i-1) - dS;
         end
     else
         for i = 2:N
-            dS = r*S(i-1)*dt+volatility*S(i-1)*dW(i-1);
+            dS = rate*S(i-1)*dt+volatility*S(i-1)*dW(i-1);
             S(i) = S(i-1) + dS;
             Splus(i) = S(i-1) + dS;
             Sminus(i) = S(i-1) - dS;

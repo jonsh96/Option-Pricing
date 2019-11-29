@@ -26,7 +26,7 @@ function J = minimizeAbsError(K1, K2, T, r, sigma, Smin, Smax, N, BS_bullspread)
     J = round(N/10);
     
     % Run the while loop until the error is < 0.05
-    while(error >= 0.05)
+    while(error > 0.05)
         % J increases by one with every iteration
         J = J+1;    
         % Compare the values of the numerical solution with the
@@ -37,6 +37,6 @@ function J = minimizeAbsError(K1, K2, T, r, sigma, Smin, Smax, N, BS_bullspread)
         % uniformly distributed between Smin and Smax
         
         % The maximum absolute error is calculated
-        error = norm(V_BS-V_PDE,Inf);   
+        error = norm(V_PDE-V_BS,Inf);   
     end
 end

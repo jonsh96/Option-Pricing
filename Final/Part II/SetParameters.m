@@ -13,13 +13,18 @@ r = [0.05 0.5];
 rate = @(t) r(1)*exp(r(2)*t);
 
 % Defining the put option payoff
-put_payoff = @(S) exp(-rate(0)*T)*max(K - S, 0);
+put_payoff = @(S) max(K - S(:,end), 0);
+
+% Defining the barrier option payoff
+Sb = 30;
+barrier_payoff = @(S) max(K-S(:,end),0).*(min(S,[],2) > Sb);
+
 
 % Defining the local volatility model
 sigma = [0.30 0.12 0.60];
 volatility = @(S,t) sigma(1)*(1+sigma(2)*cos(2*pi*t))*(1+sigma(3)*exp(-S/100));
 
-% Gatherinng the Black-Scholes prices for comparison
+% Gathering the Black-Scholes prices for comparison
 %   - Note that they won't be accurate since they assume constant interest
 %     rates and volatility which this stochastic process does not follow
 call = zeros(1,100);
