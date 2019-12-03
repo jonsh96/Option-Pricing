@@ -1,4 +1,5 @@
-function [times, prices, variances, errors, sample_sizes] = MonteCarloBullspread(Smin, Smax, K1, K2, r, sigma, T, M, payoff, BS_bullspread)
+function [times, prices, variances, errors, sample_sizes] = MonteCarloBullspread(Smin, Smax, K1, K2, rate, volatility, T, M, payoff, BS_bullspread)
+
     % INPUTS:
     %   - M:            Number of Monte Carlo simulations
     %
@@ -21,31 +22,30 @@ function [times, prices, variances, errors, sample_sizes] = MonteCarloBullspread
     % Naive method
     ST = zeros(Smax,M);
     dW = sqrt(T)*randn(Smax,M);
-    
 
     start = cputime;
     for i = 1:Smax
-        ST(i,:) = S0(i)*exp((r-0.5*sigma^2)*T+sigma.*dW(i,:));
+        ST(i,:) = S0(i)*exp((rate-0.5*volatility^2)*T+volatility.*dW(i,:));
         prices(1,i) = mean(payoff(ST(i,:)));
         variances(1,i) = var(payoff(ST(i,:)));
         errors(1,i) = BS_bullspread(i) - prices(1,i);   
     end
     times(1) = (cputime-start)/Smax;
     sample_sizes(1,:) = confidence_sample(variances(1,:));
-
+    
     % Antithetic variance reduction
     start = cputime;
-
-    Splus = zeros(Smax,M);
-    Sminus = zeros(Smax,M);
-    dW = sqrt(T)*randn(Smax,M);
+    ST = zeros(Smax, M);
+    Splus = zeros(Smax, M);
+    Sminus = zeros(Smax, M);
     for i = 1:Smax
-        Splus(i,:) = S0(i)*exp((r-0.5*sigma^2)*T+sigma.*dW(i,:)); 
-        Sminus(i,:) = S0(i)*exp((r-0.5*sigma^2)*T-sigma.*dW(i,:)); 
+        ST(i,:) = S0(i)*exp((rate-0.5*volatility^2)*T+volatility.*dW(i,:));
+        Splus(i,:) = S0(i)*exp((rate-0.5*volatility^2)*T+volatility.*dW(i,:));
+        Sminus(i,:) = S0(i)*exp((rate-0.5*volatility^2)*T-volatility.*dW(i,:));
         Z = (payoff(Splus(i,:))+payoff(Sminus(i,:)))/2;
         prices(2,i) = mean(Z);
         variances(2,i) = var(Z);
-        errors(2,i) = BS_bullspread(i) - prices(2,i);   % bullspread -> BS_payoff
+        errors(2,i) = payoff(i) - prices(2,i);   % bullspread -> BS_payoff
     end
     times(2) = (cputime-start)/Smax;
     sample_sizes(2,:) = confidence_sample(variances(2,:));
@@ -58,10 +58,10 @@ function [times, prices, variances, errors, sample_sizes] = MonteCarloBullspread
     dW = sqrt(T)*randn(Smax);
 
     for i = 1:Smax
-        gm = S0(i)*exp(r*T);
-%         gv = S0(i)^2*exp(2*r*T)*(exp(sigma^2*T)-1);
+        gm = S0(i)*exp(rate*T);
+%       gv = S0(i)^2*exp(2*r*T)*(exp(sigma^2*T)-1);
         
-        ST = S0(i)*exp((r-0.5*sigma^2)*T+sigma.*dW(i,:));
+        ST = S0(i)*exp((rate-0.5*volatility^2)*T+volatility.*dW(i,:));
         covariance_matrix = cov(f(ST),ST);
         c = covariance_matrix(1,2)/var(ST);
 %       fcv = var(f(ST))*(1-(covariance_matrix(1,2))^2/(var(f(ST))*var(g(ST))));
@@ -69,7 +69,7 @@ function [times, prices, variances, errors, sample_sizes] = MonteCarloBullspread
         
         prices(3,i) = mean(fc);
         variances(3,i) = var(fc);
-        errors(3,i) = BS_bullspread(i) - prices(3,i);
+        errors(3,i) = payoff(i) - prices(3,i);
     end
     times(3) = (cputime-start)/Smax;
 
@@ -78,15 +78,15 @@ function [times, prices, variances, errors, sample_sizes] = MonteCarloBullspread
     % Importance sampling
     start = cputime;
     for i = 1:Smax
-        y0 = normcdf((log(K1/S0(i))-(r-0.5*sigma^2)*T)/(sigma*sqrt(T)));
+        y0 = normcdf((log(K1/S0(i))-(rate-0.5*volatility^2)*T)/(volatility*sqrt(T)));
         Y = y0 + (1-y0)*rand(1,M);
         X = norminv(Y);
-        ST = S0(i)*exp((r-0.5*sigma^2)*T+sigma*sqrt(T)*X);
+        ST = S0(i)*exp((rate-0.5*volatility^2)*T+volatility*sqrt(T)*X);
         ST(ST==Inf) = 0; % SET ALL ST = INF TO ZERO 
-        fST = (1-y0)*exp(-r*T).*(ST-K1-max(ST-K2,0));
+        fST = (1-y0)*exp(-rate*T).*(ST-K1-max(ST-K2,0));
         prices(4,i) = mean(fST);
         variances(4,i) = var(fST);
-        errors(4,i) = BS_bullspread(i) - prices(4,i);
+        errors(4,i) = payoff(i) - prices(4,i);
     end
     times(4) = (cputime-start)/Smax;
     sample_sizes(4,:) = confidence_sample(variances(4,:));

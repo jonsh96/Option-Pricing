@@ -14,8 +14,8 @@ function [S, Splus, Sminus] = GeometricBrownianMotion(S0, rate, volatility, dt, 
         for i = 2:N
             dS = rate((i-1)*dt)*S(i-1)*dt+volatility(S(i-1),(i-1)*dt)*S(i-1)*dW(i-1);
             S(i) = S(i-1) + dS;
-            Splus(i) = S(i-1) + dS;
-            Sminus(i) = S(i-1) - dS;
+            Splus(i) = Splus(i-1) + dS;
+            Sminus(i) = Sminus(i-1) - dS;
         end
     else
         if(dt == T)
@@ -33,8 +33,8 @@ function [S, Splus, Sminus] = GeometricBrownianMotion(S0, rate, volatility, dt, 
             for i = 2:N
                 dS = rate*S(i-1)*dt+volatility*S(i-1)*dW(i-1);
                 S(i) = S(i-1) + dS;
-                Splus(i) = S(i-1) + dS;
-                Sminus(i) = S(i-1) - dS;
+                Splus(i) = Splus(i-1) + dS;
+                Sminus(i) = Sminus(i-1) - dS;
             end
         end
     end
