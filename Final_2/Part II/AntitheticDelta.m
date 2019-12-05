@@ -1,34 +1,33 @@
-function delta = AntitheticDelta(M, rate, volatility, dt, T, Smax, option_payoff, barrier)
-    % Antithetic variance reduction WITH PATH RECYCLING
-
-    dS = 1;
+%% TODO FIX FOR PART II
+function delta = AntitheticDelta(M, rate, volatility, dt, T, Smin, Smax, option_payoff)
+    % INPUTS:   
+    % - M:              Number of Monte Carlo simulations
+    % - rate:           Interest rates
+    % - volatility:     Volatility
+    % - dt:             Size of time steps (in years)
+    % - T:              Time to maturity (in years)
+    % - Smin:           Minimum stock price 
+    % - Smax:           Maximum stock price
+    % - option_payoff:  Option payoff of the bull call spread
+    %                   (function_handle)
+    %
+    % ABOUT:
+    % - Calculates the delta of the bull call spread with the antithetic 
+    %   variance reduction method with path recycling 
+    
+    ds = 1;
     dW = sqrt(dt)*randn(M,Smax); % Explain in report - used for path recycling
     delta = zeros(1,Smax);
-    for i = 1:Smax
-        
-        
-        for j = 1:M
-            dS = rate*S(i,j)*dt+volatility*S(i,j)*dW(i,j);
-            dSplus = rate(i*dt)*Splus(i,j)*dt+volatility*Splus(i,j)*dW(i,j);
-            dSminus = rate(i*dt)*Sminus(i,j)*dt+volatility(Sminus(i,j),i*dt)*Sminus(i,j)*dW(i,j);
-            
-            S(i+1,j) = S(i,j) + dS;
-            Splus(i+1,j) = Splus(i,j) + dSplus;
-            Sminus(i+1,j) = S(i,j) + dSminus;
-        end 
-        
-        if nargin(option_payoff) == 1
-            FPL = option_payoff(SPL);
-            FPR = option_payoff(SPR);
-            FML = option_payoff(SML);
-            FMR = option_payoff(SMR);
- 
-        else
-            FPL = option_payoff(SPL,barrier);
-            FPR = option_payoff(SPR,barrier);
-            FML = option_payoff(SML,barrier);
-            FMR = option_payoff(SMR,barrier);
-        end
+    for S = Smin:Smax
+        % Shorthand: P = plus, M = minus, R = right, L = left
+        SPL = (S-ds)*exp((rate-0.5*volatility^2)*T+volatility*dW(:,S));
+        SPR = (S+ds)*exp((rate-0.5*volatility^2)*T+volatility*dW(:,S));
+        SML = (S-ds)*exp((rate-0.5*volatility^2)*T-volatility*dW(:,S));
+        SMR = (S+ds)*exp((rate-0.5*volatility^2)*T-volatility*dW(:,S));
+        FPL = option_payoff(SPL);
+        FPR = option_payoff(SPR);
+        FML = option_payoff(SML);
+        FMR = option_payoff(SMR);
         FR = (FPR + FMR)/2;
         FL = (FPL + FML)/2;
         delta(S) = (mean(FR) - mean(FL))/2;
