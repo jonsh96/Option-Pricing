@@ -42,7 +42,7 @@ function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, 
     if(nargin(option_payoff) == 1)
         f = @(S) option_payoff(S);
     else
-        f = @(S) option_payoff(S, Sb);
+        f = @(S) option_payoff(S, barrier);
     end
     
     for i = 1:Smax

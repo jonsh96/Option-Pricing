@@ -1,4 +1,4 @@
-function [times, prices, variances, sample_sizes] = AntitheticVarianceReduction(Smin, Smax, rate, volatility, dt, T, M, option_payoff, option_price)
+function [times, prices, variances, sample_sizes] = AntitheticVarianceReduction(Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier)
     % INPUTS:
     %   - K1:               Lower strike price of the vanilla put/barrier option
     %   - K2:               Upper strike price of the vanilla put/barrier option
@@ -47,7 +47,7 @@ function [times, prices, variances, sample_sizes] = AntitheticVarianceReduction(
         if(nargin(option_payoff) == 1)
             Z = (option_payoff(Splus(:,end)) + option_payoff(Sminus(:,end)))/2;
         else
-            Z = (option_payoff(Splus(:,end),barrier) + option_payoff(Sminus(:,end)),barrier)/2;
+            Z = (option_payoff(Splus(:,end),barrier) + option_payoff(Sminus(:,end),barrier))/2;
         end
         prices(1,i) = mean(Z);
         variances(1,i) = var(Z);

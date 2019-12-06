@@ -1,9 +1,9 @@
-function BarrierComparison(Smin, Smax, rate, volatility, dt, T, M, barrier_payoff)
+function BarrierComparison(K, Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier)
     % TODO: COMMENT
     sp = 1; % Subplot counter
     for i = 5:8:45
-        [times, prices, variances, sample_sizes] = MonteCarlo(Smin, Smax, rate, volatility, dt, T, M, barrier_payoff, i);
-        subplot(2,3,sp);
+        subplot(3,2,sp)
+        [times, prices, variances, sample_sizes] = MonteCarlo(K, Smin, Smax, rate, volatility, dt, T, M, option_payoff, i);
         plot(prices(1,:))
         hold on
         plot(prices(2,:))
