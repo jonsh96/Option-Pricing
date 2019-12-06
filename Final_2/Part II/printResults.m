@@ -1,4 +1,4 @@
-function printResults(times, variances, sample_sizes)
+function PrintResults(times, variances, sample_sizes)
     time = times';
     variance = max(variances');
 %     error = max(errors');

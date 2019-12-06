@@ -7,10 +7,10 @@ V_BS = option_price(S_PDE);
 error = norm(V_PDE-V_BS,Inf);
 
 %% Plotting the result
-PlotComparison(S_PDE, V_PDE, V_BS)
+PlotComparison(S_PDE, V_PDE, V_BS);
 
 %% Error analysis of Smax for constant N and J
-ErrorAnalysis(K1, K2, T, rate, volatility, Smin, Smax, N, J, option_price)
+ErrorAnalysis(K1, K2, T, rate, volatility, Smin, Smax, N, J, option_price);
 
 %% Measurements of M = 1000 Monte Carlo simulations
 [times, prices, variances, sample_sizes] = MonteCarlo(K1, K2, Smin, Smax, rate, volatility, dt, T, M, option_payoff, option_price);
@@ -19,13 +19,13 @@ ErrorAnalysis(K1, K2, T, rate, volatility, Smin, Smax, N, J, option_price)
 PrintResults(times, variances, sample_sizes);
 
 %% Plotting the different methods
-PlotMonteCarlo(Smin, Smax, prices, option_price)
+PlotMonteCarlo(Smin, Smax, prices, option_price);
 
 %% Plotting the different methods (not used in report)
 figure
 for i = 1:4
     subplot(4,1,i)
-    PlotDifference(Smin, Smax, prices, i, option_price)
+    PlotDifference(Smin, Smax, prices, i, option_price);
 end
 
 %% Plotting the results
