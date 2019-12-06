@@ -42,8 +42,13 @@ function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, 
     f = @(S) option_payoff(S);
 
     for i = 1:Smax
-        gm = i*exp(rate*T);
-%       gv = S0(i)^2*exp(2*r*T)*(exp(sigma^2*T)-1);
+        if(isa(rate,'function_handle'))
+            gm = i*exp(integral(rate,0,T));
+            gv = gm^2*(exp(sigma(1)^2*T)-1);
+        else
+            gm = i*exp(rate*T);
+            gv = gm^2*(exp(sigma(1)^2*T)-1);
+        end
         S = zeros(M, Nsteps+1);
         Splus = zeros(M, Nsteps+1);
         Sminus = zeros(M, Nsteps+1);
@@ -51,12 +56,9 @@ function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, 
             [S(j,:), Splus(j,:), Sminus(j,:)] = GeometricBrownianMotion(i,rate,volatility,dt,T);
         end
         covariance_matrix = cov(f(S(:,end)),S(:,end));
-        c = covariance_matrix(1,2)/var(S(:,end));
-%       fcv = var(f(ST))*(1-(covariance_matrix(1,2))^2/(var(f(ST))*var(g(ST))));
+        c = covariance_matrix(1,2)/gv;        
         fc = f(S(:,end))-c*(g(S(:,end))-gm);
-        
         prices(1,i) = mean(fc);
-%         errors(1,i) = prices(1,i) - option_price(i);
         variances(1,i) = var(fc);
     end
     sample_sizes(1,:) = confidence_sample(variances(1,:));
