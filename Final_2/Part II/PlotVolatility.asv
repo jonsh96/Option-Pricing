@@ -1,0 +1,10 @@
+function PlotVolatility(Smin, Smax, T, volatility)
+    for S = linspace(Smin, Smax, 1000)
+        for t = linspace(0, T, 1000)
+            Z = volatility(S,t);
+        end
+    end
+    X = linspace(Smin, Smax, 1000);
+    Y =
+    surf(
+end

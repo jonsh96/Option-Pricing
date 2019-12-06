@@ -1,4 +1,5 @@
 function PlotResults(sample_sizes)
+    % TODO: COMMENT
     % INPUTS: 
     %   - sample_sizes: Volatility (in decimals)
     
