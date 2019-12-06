@@ -12,3 +12,4 @@ function PlotResults(sample_sizes)
     ylabel('Sample size needed for 95% accuracy','FontSize',14)
     legend('Naive method','Antithetic variance reduction', 'Control variate','FontSize',14)
 end
+
