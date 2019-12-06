@@ -44,7 +44,11 @@ function [times, prices, variances, sample_sizes] = AntitheticVarianceReduction(
         for j = 1:M
             [S(j,:), Splus(j,:), Sminus(j,:)] = GeometricBrownianMotion(i,rate,volatility,dt,T);
         end
-        Z = (option_payoff(Splus(:,end)) + option_payoff(Sminus(:,end)))/2;
+        if(nargin(option_payoff) == 1)
+            Z = (option_payoff(Splus(:,end)) + option_payoff(Sminus(:,end)))/2;
+        else
+            Z = (option_payoff(Splus(:,end),barrier) + option_payoff(Sminus(:,end)),barrier)/2;
+        end
         prices(1,i) = mean(Z);
         variances(1,i) = var(Z);
     end

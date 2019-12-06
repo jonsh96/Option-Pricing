@@ -17,7 +17,7 @@ function PlotMonteCarlo(Smin, Smax, prices, option_price)
         plot(Smin:Smax,prices(i,:),col{i})
         hold on
     end
-    plot(option_price,'k--','LineWidth',1.5)
+%     plot(option_price,'k--','LineWidth',1.5)
     grid on
     xlabel('Stock price (£)','FontSize',14)
     ylabel('Option price (£)','FontSize',14)

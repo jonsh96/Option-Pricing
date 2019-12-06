@@ -1,4 +1,4 @@
-function [times, prices, variances, sample_sizes] = NaiveMethod(Smin, Smax, rate, volatility, dt, T, M, option_payoff, option_price)
+function [times, prices, variances, sample_sizes] = NaiveMethod(Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier)
     % INPUTS:
     %   - K1:               Lower strike price of the bull call spread
     %   - K2:               Upper strike price of the bull call spread
@@ -44,8 +44,13 @@ function [times, prices, variances, sample_sizes] = NaiveMethod(Smin, Smax, rate
             % Generates M Geometric Brownian motion stock prices
             S(j,:) = GeometricBrownianMotion(i,rate,volatility,dt,T);
         end
-        prices(1,i) = mean(option_payoff(S(:,end)));
-        variances(1,i) = var(option_payoff(S(:,end)));
+        if(nargin(option_payoff) == 1)
+            prices(1,i) = mean(option_payoff(S(:,end)));
+            variances(1,i) = var(option_payoff(S(:,end)));
+        else
+            prices(1,i) = mean(option_payoff(S(:,end),barrier));
+            variances(1,i) = var(option_payoff(S(:,end),barrier));
+        end
     end
     sample_sizes(1,:) = confidence_sample(variances(1,:));
     % Average the CPU time for accurate result
