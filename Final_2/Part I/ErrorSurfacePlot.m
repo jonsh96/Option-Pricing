@@ -1,4 +1,4 @@
-function ErrorSurfacePlot(K1, K2, T, rate, volatility, Smin, Smax, N, J)
+function ErrorSurfacePlot(K1, K2, T, rate, volatility, Smin, Smax)
     % INPUTS: 
     %   - K1:    Strike price of the long call option
     %   - K2:    Strike price of the short call option
@@ -7,8 +7,6 @@ function ErrorSurfacePlot(K1, K2, T, rate, volatility, Smin, Smax, N, J)
     %   - sigma: Volatility (in decimals)
     %   - Smin:  Lowest value of the stock price
     %   - Smax:  Highest value of the stock price
-    %   - N:     Number of time steps
-    %   - J:     Number of grid points
     %
     % ABOUT:
     %   - Plots the surface plot of the maximum absolute error as a

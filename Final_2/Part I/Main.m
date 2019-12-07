@@ -6,6 +6,9 @@ SetParameters;
 V_BS = option_price(S_PDE); 
 error = norm(V_PDE-V_BS,Inf);
 
+%% Surface plot of the maximum absolute error
+ErrorSurfacePlot(K1, K2, T, rate, volatility, Smin, Smax);
+
 %% Plotting the result
 PlotComparison(S_PDE, V_PDE, V_BS);
 
