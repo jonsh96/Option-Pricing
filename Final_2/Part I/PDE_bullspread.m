@@ -8,7 +8,7 @@ function [V,S] = PDE_bullspread(K1, K2, T, r, sigma, Smin, Smax, N, J)
     %   - Smin:  Lowest value of the stock price
     %   - Smax:  Highest value of the stock price
     %   - N:     Number of time steps
-    %   - J:     Number of grid oints
+    %   - J:     Number of grid points
     %   
     % OUTPUTS: 
     %   - V:    Price of the option
@@ -34,6 +34,7 @@ function [V,S] = PDE_bullspread(K1, K2, T, r, sigma, Smin, Smax, N, J)
     % Transformation S = exp(x)
     xmin = log(Smin);
     xmax = log(Smax);
+    
     % Transformation t = T - 0.5*sigma^2
     tau_max = T*sigma^2*0.5;
 

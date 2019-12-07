@@ -1,4 +1,4 @@
-function PlotResults(sample_sizes)
+function PlotSampleSizes(sample_sizes)
    % INPUTS: 
     %   - times:            CPU times of the four Monte Carlo methods
     %   - prices:           Option prices calculated by the four Monte Carlo methods

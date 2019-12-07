@@ -1,9 +1,11 @@
 function PlotComparison(S_PDE, V_PDE, V_BS)
     % INPUTS: 
     %   - S_PDE: Range of stock prices (output from the heat equation
-    %            transformation
-    %   - V_PDE: Numerical solution of option prices as a function of stock price 
-    %   - V_BS:  Black-Scholes solution of option prices as a function of stock price 
+    %            transformation)
+    %   - V_PDE: Numerical solution of option prices as a function of stock
+    %            prices
+    %   - V_BS:  Black-Scholes solution of option prices as a function of 
+    %            stock price 
     %
     % ABOUT: 
     %   - Plots a comparison of the option prices derived from the

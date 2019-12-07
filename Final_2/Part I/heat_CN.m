@@ -19,8 +19,8 @@ function [U, x, t] = heat_CN(u0, gmin, gmax, t_f, xmin, xmax, N, J)
     %     - Changed it to a direct solver (tridiag) from the x = A\b method
     % 
     % ABOUT:
-    %   - Solve heat equation d_t u = d_xx u by Backward Euler scheme
-    %     with general Dirichlet boundary conditions.
+    %   - Solve heat equation d_t u = d_xx u by Crank-Nicolson scheme with 
+    %     general Dirichlet boundary conditions.
     
     h  = (xmax-xmin)/J;
     dt = 0.5*t_f/N;
@@ -39,12 +39,12 @@ function [U, x, t] = heat_CN(u0, gmin, gmax, t_f, xmin, xmax, N, J)
     I_dtL_diag = ones(J+1,1) - dtL_diag;
     I_dtL_sub = - dtL_sub;
     
-%     % Generate a (J+1) x (J+1) matrix for the implicit part of the time step.
-%     % (This is not efficient and will be improved next week.)
-%     I_dtL = diag(I_dtL_diag) + diag(I_dtL_sup,1) + diag(I_dtL_sub,-1);
-% 
-%     % If N = 1 and J is small (eg 4) you can output the matrix.
-%     % I_m_dtL
+    % Generate a (J+1) x (J+1) matrix for the implicit part of the time step.
+    % (This is not efficient and will be improved next week.)
+    % I_dtL = diag(I_dtL_diag) + diag(I_dtL_sup,1) + diag(I_dtL_sub,-1);
+
+    % If N = 1 and J is small (eg 4) you can output the matrix.
+    % I_m_dtL
 
     % Allocate solution matrix will all zeros. Allocate vector RHS that will 
     % be the right-hand-side of a linear system of equations.

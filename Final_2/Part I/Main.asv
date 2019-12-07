@@ -28,16 +28,24 @@ for i = 1:4
     PlotDifference(Smin, Smax, prices, i, option_price);
 end
 
-%% Plotting the sample sizes for each of the methods as a function of stock price
-PlotSampleSizes(sample_sizes);
-
-%% TODO: FIX DELTA
-%% Normal delta
-finDelta = FiniteDifferenceDelta(S_PDE,V_PDE);
-plot(S_PDE(2:end), finDelta)
-hold on
-plot(S_PDE(2:end), option_delta(S_PDE(2:end)), 'o')
+%% Plotting the results
+PlotSampleSiz(sample_sizes);
 
 %% Calculating the delta of the bull call spread
-antiDelta = AntitheticDelta(M, rate, volatility, dt, T, Smin, Smax, option_payoff);
-plotDelta(Smin, Smax, antiDelta, option_delta);
+delta = AntitheticDelta(M, rate, volatility, dt, T, Smin, Smax, option_payoff);
+plot(Smin:Smax,delta,'r-o')
+hold on
+plot(Smin:Smax,option_delta(Smin:Smax),'k','LineWidth',1.5)
+plot(S_PDE(1:end-1),calculateDelta(S_PDE,V_PDE))
+grid on
+xlabel('Stock price (£)','FontSize',14)
+ylabel('Delta value (\Delta)','FontSize',14)
+legend('Numerical solution','Black Scholes solution','FontSize',14)
+
+% DO PATH RECYCLING?
+function delta = calculateDelta(S,V)
+    delta = zeros(1,size(S,2)-1);
+    for i = 1:size(S,2)-1
+        delta(i) = (V(i+1)-V(i))/(S(i+1)-S(i));
+    end
+end

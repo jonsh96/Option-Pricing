@@ -43,10 +43,12 @@ function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, 
     for i = 1:Smax
         if(isa(rate,'function_handle'))
             gm = i*exp(integral(rate,0,T));
-            gv = gm^2*(exp(sigma(1)^2*T)-1);
+            % Couldn't find a neat way to include sigma as an input so here
+            % I had to hardcode sigma = 0.3 into the variance
+            gv = gm^2*(exp(0.3^2*T)-1);
         else
             gm = i*exp(rate*T);
-            gv = gm^2*(exp(sigma(1)^2*T)-1);
+            gv = gm^2*(exp(volatility^2*T)-1);
         end
         
         S = zeros(M, Nsteps+1);

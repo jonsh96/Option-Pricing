@@ -8,6 +8,8 @@ function PrintResults(times, variances, sample_sizes)
     % 
     % ABOUTS:   
     %  - Prints the comparison of the four Monte Carlo methods
+    %       - Maximum variance, maximum sample size needed for desired
+    %         accuracy and average CPU time of calculation
     
     time = times';
     variance = max(variances');
