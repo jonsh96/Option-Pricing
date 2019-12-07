@@ -1,4 +1,4 @@
-function PlotResults(sample_sizes)
+function PlotSampleSizes(Smin, Smax, sample_sizes, barrier)
     % TODO: COMMENT
     % INPUTS: 
     %   - sample_sizes: Volatility (in decimals)

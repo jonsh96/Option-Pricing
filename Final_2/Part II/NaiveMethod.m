@@ -45,11 +45,11 @@ function [times, prices, variances, sample_sizes] = NaiveMethod(Smin, Smax, rate
             S(j,:) = GeometricBrownianMotion(i,rate,volatility,dt,T);
         end
         if(nargin(option_payoff) == 1)
-            prices(1,i) = mean(option_payoff(S(:,end)));
-            variances(1,i) = var(option_payoff(S(:,end)));
+            prices(1,i) = mean(option_payoff(S));
+            variances(1,i) = var(option_payoff(S));
         else
-            prices(1,i) = mean(option_payoff(S(:,end),barrier));
-            variances(1,i) = var(option_payoff(S(:,end),barrier));
+            prices(1,i) = mean(option_payoff(S,barrier));
+            variances(1,i) = var(option_payoff(S,barrier));
         end
     end
     sample_sizes(1,:) = confidence_sample(variances(1,:));

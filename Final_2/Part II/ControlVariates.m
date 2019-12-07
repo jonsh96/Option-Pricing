@@ -39,15 +39,9 @@ function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, 
     
     start = cputime;
     g = @(S) S;
-    if(nargin(option_payoff) == 1)
-        f = @(S) option_payoff(S);
-    else
-        f = @(S) option_payoff(S, barrier);
-    end
-    
     for i = 1:Smax
         if(isa(rate,'function_handle') && isa(volatility,'function_handle'))
-            gm = i*exp(integral(rate,0,T));
+            gm = g(i)*exp(integral(rate,0,T));
             % Couldn't find a neat way to include sigma as an input so here
             % I had to hardcode sigma = 0.3 into the variance
             gv = gm^2*(exp(0.3^2*T)-1);     
@@ -61,9 +55,15 @@ function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, 
         for j = 1:M
             [S(j,:), Splus(j,:), Sminus(j,:)] = GeometricBrownianMotion(i,rate,volatility,dt,T);
         end
-        covariance_matrix = cov(f(S(:,end)),S(:,end));
-        c = covariance_matrix(1,2)/gv;        
-        fc = f(S(:,end))-c*(g(S(:,end))-gm);
+        if(nargin(option_payoff) == 1)
+            covariance_matrix = cov(option_payoff(S),S(:,end));
+            c = covariance_matrix(1,2)/gv;        
+            fc = option_payoff(S)-c*(g(S(:,end))-gm);
+        else
+            covariance_matrix = cov(option_payoff(S,barrier),S(:,end));
+            c = covariance_matrix(1,2)/gv;        
+            fc = option_payoff(S,barrier)-c*(g(S(:,end))-gm);    
+        end
         prices(1,i) = mean(fc);
         variances(1,i) = var(fc);
     end

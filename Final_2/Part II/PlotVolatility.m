@@ -1,5 +1,13 @@
 function PlotVolatility(Smin, Smax, T, volatility)
-    % TODO: COMMENT
+    % INPUTS:
+    %   - Smin:         Minimum stock price
+    %   - Smax:         Maximum stock price
+    %   - T:            Time to maturity
+    %   - volatility:   Local volatility model (function handle)
+    %
+    % ABOUT:
+    %   - Plots the surface of the local volatility model
+    
     fsurf(volatility, [Smin Smax 0 T]);
     xlabel('Stock price', 'FontSize', 18)
     ylabel('Time to maturity', 'FontSize', 18)

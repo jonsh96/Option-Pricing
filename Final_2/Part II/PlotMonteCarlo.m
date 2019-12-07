@@ -1,10 +1,10 @@
-function PlotMonteCarlo(Smin, Smax, prices, option_price)
+function PlotMonteCarlo(Smin, Smax, prices, barrier)
     % INPUTS: 
     %   - Smin:             Minimum stock prices
     %   - Smax:             Maximum stock prices
     %   - prices:           Option prices determined by the four Monte Carlo methods
-    %   - option_prices:    Black-Scholes solution of the vanilla
-    %                       put/barrier option (function handle)
+    %   - barrier:          Plot the graphs starting from the barrier, if
+    %                       barrier is set to 0 then from Smin
     %
     % ABOUT: 
     %   - Plots a comparison of the option prices derived from the
@@ -14,13 +14,12 @@ function PlotMonteCarlo(Smin, Smax, prices, option_price)
     col={'o', 'd', '+', '*'};   
     figure
     for i = 1:3
-        plot(Smin:Smax,prices(i,:),col{i})
+        plot(max(Smin,barrier):Smax,prices(i,max(Smin,barrier):Smax),col{i})
         hold on
     end
-%     plot(option_price,'k--','LineWidth',1.5)
+    xlim([max(Smin,barrier), Smax])
     grid on
     xlabel('Stock price (£)','FontSize',14)
     ylabel('Option price (£)','FontSize',14)
-    xlim([Smin Smax])
     legend('Naive method','Antithetic variance reduction','Control variates','FontSize',14)
 end 
