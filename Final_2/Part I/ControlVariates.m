@@ -1,4 +1,4 @@
-function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, rate, volatility, dt, T, M, option_payoff, option_price)
+function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier)
     % INPUTS:
     %   - K1:               Lower strike price of the bull call spread
     %   - K2:               Upper strike price of the bull call spread
@@ -11,6 +11,7 @@ function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, 
     %   - M:                Number of Monte Carlo simulations
     %   - option_payoff:    Payoff of the option (function_handle)
     %   - option_price:     Black-Scholes price of the option (function_handle)
+    %   - barrier:          Barrier price (used in part II)
     %
     % OUTPUTS:
     %   - times:            CPU times required to run each of the methods

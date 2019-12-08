@@ -1,4 +1,4 @@
-function [times, prices, variances, sample_sizes] = AntitheticVarianceReduction(Smin, Smax, rate, volatility, dt, T, M, option_payoff, option_price)
+function [times, prices, variances, sample_sizes] = AntitheticVarianceReduction(Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier)
     % INPUTS:
     %   - K1:               Lower strike price of the bull call spread
     %   - K2:               Upper strike price of the bull call spread
@@ -11,6 +11,7 @@ function [times, prices, variances, sample_sizes] = AntitheticVarianceReduction(
     %   - M:                Number of Monte Carlo simulations
     %   - option_payoff:    Payoff of the option (function_handle)
     %   - option_price:     Black-Scholes price of the option (function_handle)
+    %   - barrier:          Barrier price (used in part II)
     %
     % OUTPUTS:
     %   - times:            CPU times required to run each of the methods
@@ -26,7 +27,7 @@ function [times, prices, variances, sample_sizes] = AntitheticVarianceReduction(
     
     % Function handle used to calculate the number simulations required for
     % the desired accuracy of error < 0.05 pounds with a 95% accuracy
-    confidence_sample = @(v) (sqrt(v).*1.96/0.05).^2;
+     confidence_sample = @(v) (sqrt(v).*1.96/0.05).^2;
     
     % Defining the number of time steps 
     Nsteps = T/dt;
@@ -37,24 +38,27 @@ function [times, prices, variances, sample_sizes] = AntitheticVarianceReduction(
     sample_sizes = zeros(1, Smax);
     
     start = cputime;
-    for i = 1:Smax
+    for i = Smin:Smax
+        % Preallocating memory for the matrices
         S = zeros(M, Nsteps+1);
         Splus = zeros(M, Nsteps+1);
         Sminus = zeros(M, Nsteps+1);
         for j = 1:M
+            % Simulate Geometric brownian motion
             [S(j,:), Splus(j,:), Sminus(j,:)] = GeometricBrownianMotion(i,rate,volatility,dt,T);
         end
-        Z = (option_payoff(Splus(:,end)) + option_payoff(Sminus(:,end)))/2;
+        % If the number of inputs to option_payoff is one, then there is no
+        % barrier (part I)
+        if(nargin(option_payoff) == 1)
+            Z = (option_payoff(Splus) + option_payoff(Sminus))/2;
+        else
+            % Otherwise we calculate the price with a barrier
+            Z = (option_payoff(Splus,barrier) + option_payoff(Sminus,barrier))/2;
+        end
         prices(1,i) = mean(Z);
         variances(1,i) = var(Z);
     end
+    % Calculate the sample size needed for the given confidence interval
     sample_sizes(1,:) = confidence_sample(variances(1,:));
     times = (cputime-start)/Smax;
 end    
-
-
-
-
-
-
-

@@ -1,8 +1,7 @@
-function plotDelta(Smin, Smax, S_PDE, delta, option_delta)
-    plot(S_PDE(2:end), delta,'r-d','LineWidth',2)
+function PlotDelta(Smin, Smax, delta, option_delta)
+    plot(delta,'r-d','LineWidth',2)
     hold on
-    plot(Smin:Smax, option_delta(Smin:Smax),'k','LineWidth',1)
-%     plot(S_PDE(1:end-1),calculateDelta(S_PDE,V_PDE))
+    plot(Smin:Smax, option_delta(Smin:Smax),'k','LineWidth',1.5)
     grid on
     xlabel('Stock price (£)','FontSize',14)
     ylabel('Delta value (\Delta)','FontSize',14)

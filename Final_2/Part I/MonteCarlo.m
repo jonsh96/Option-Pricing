@@ -1,7 +1,6 @@
-function [times, prices, variances, sample_sizes] = MonteCarlo(K1, K2, Smin, Smax, rate, volatility, dt, T, M, option_payoff, option_price)
+function [times, prices, variances, sample_sizes] = MonteCarlo(K, Smin, Smax, rate, volatility, dt, T, M, option_payoff, option_price, barrier)
     % INPUTS:
-    %   - K1:               Lower strike price of the bull call spread
-    %   - K2:               Upper strike price of the bull call spread
+    %   - K:                Value (or array) of strike prices
     %   - Smin:             Lowest value of the stock price
     %   - Smax:             Highest value of the stock price
     %   - rate:             Interest rates (constant or a function_handle)
@@ -11,6 +10,7 @@ function [times, prices, variances, sample_sizes] = MonteCarlo(K1, K2, Smin, Sma
     %   - M:                Number of Monte Carlo simulations
     %   - option_payoff:    Payoff of the option (function_handle)
     %   - option_price:     Black-Scholes price of the option (function_handle)
+    %   - barrier:          Barrier price (used in part II)
     %
     % OUTPUTS:
     %   - times:            CPU times required to run each of the methods
@@ -31,14 +31,14 @@ function [times, prices, variances, sample_sizes] = MonteCarlo(K1, K2, Smin, Sma
     sample_sizes = zeros(4, Smax);
 
     % Naive method
-    [times(1), prices(1,:), variances(1,:), sample_sizes(1,:)] = NaiveMethod(Smin, Smax, rate, volatility, dt, T, M, option_payoff, option_price);
+    [times(1), prices(1,:), variances(1,:), sample_sizes(1,:)] = NaiveMethod(K, Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier);
     
     % Antithetic variance reduction
-    [times(2), prices(2,:), variances(2,:), sample_sizes(2,:)] = AntitheticVarianceReduction(Smin, Smax, rate, volatility, dt, T, M, option_payoff, option_price);
+    [times(2), prices(2,:), variances(2,:), sample_sizes(2,:)] = AntitheticVarianceReduction(Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier);
 
     % Control variates
-    [times(3), prices(3,:), variances(3,:), sample_sizes(3,:)] = ControlVariates(Smin, Smax, rate, volatility, dt, T, M, option_payoff, option_price);
+    [times(3), prices(3,:), variances(3,:), sample_sizes(3,:)] = ControlVariates(Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier);
     
     % Importance sampling
-    [times(4), prices(4,:), variances(4,:), sample_sizes(4,:)] = ImportanceSampling(K1, K2, Smin, Smax, rate, volatility, dt, T, M, option_payoff, option_price);
+    [times(4), prices(4,:), variances(4,:), sample_sizes(4,:)] = ImportanceSampling(K, Smin, Smax, rate, volatility, dt, T, M, option_payoff);
 end

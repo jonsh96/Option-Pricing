@@ -1,7 +1,6 @@
-function [times, prices, variances, sample_sizes] = ImportanceSampling(K1, K2, Smin, Smax, rate, volatility, dt, T, M, option_payoff, option_price)
+function [times, prices, variances, sample_sizes] = ImportanceSampling(K, Smin, Smax, rate, volatility, dt, T, M, option_payoff, option_price)
     % INPUTS:
-    %   - K1:               Lower strike price of the bull call spread
-    %   - K2:               Upper strike price of the bull call spread
+    %   - K:                Value (or array) of strike prices
     %   - Smin:             Lowest value of the stock price
     %   - Smax:             Highest value of the stock price
     %   - rate:             Interest rates (constant or a function_handle)
@@ -35,14 +34,14 @@ function [times, prices, variances, sample_sizes] = ImportanceSampling(K1, K2, S
     
     start = cputime;
     for i = 1:Smax
-        y0 = normcdf((log(K1/i)-(rate-0.5*volatility^2)*T)/(volatility*sqrt(T)));
+        y0 = normcdf((log(K(1)/i)-(rate-0.5*volatility^2)*T)/(volatility*sqrt(T)));
         Y = y0 + (1-y0)*rand(1,M);
         X = norminv(Y);
         S = i*exp((rate-0.5*volatility^2)*T+volatility*sqrt(T)*X);
         % Setting all S = INF to zero 
         % - This error is caused by the norminv function
         S(S == Inf) = 0; 
-        fST = (1-y0)*exp(-rate*T).*(S-K1-max(S-K2,0));
+        fST = (1-y0)*exp(-rate*T).*(S-K(1)-max(S-K(2),0));
         prices(1,i) = mean(fST);
         variances(1,i) = var(fST);
     end

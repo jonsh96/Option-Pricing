@@ -1,4 +1,4 @@
-function ErrorSurfacePlot(K1, K2, T, rate, volatility, Smin, Smax)
+function ErrorSurfacePlot(Smin, Smax, K1, K2, T, rate, volatility, option_price);
     % INPUTS: 
     %   - K1:    Strike price of the long call option
     %   - K2:    Strike price of the short call option
@@ -25,3 +25,4 @@ function ErrorSurfacePlot(K1, K2, T, rate, volatility, Smin, Smax)
     xlabel('Number of time steps','FontSize',14)
     ylabel('Number of grid points','FontSize',14)
     zlabel('Maximum absolute error','FontSize',14)
+end

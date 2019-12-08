@@ -11,7 +11,7 @@ function PlotMonteCarlo(Smin, Smax, prices, option_price)
     %     numerical solution and the Black-Scholes formula
     
     % Cell array of four different shapes
-    col={'o', 'd', '+', '*'};   
+    col={'-o', '-d', '-x', '-*'};   
     figure
     for i = 1:4
         plot(Smin:Smax,prices(i,:),col{i})

@@ -17,7 +17,7 @@ option_price = @(S) blsprice(S, K1, rate, T, volatility)-blsprice(S, K2, rate, T
 % BS_bullspread is now an anonymous function which uses the Black-Scholes function blsprice to compare the price.    
 
 % Payoff is the discounted payoff at maturity as a function of the stock price at maturity, S
-option_payoff = @(S) exp(-rate*T)*(max(S-K1,0)-max(S-K2,0));
+option_payoff = @(S) exp(-rate*T)*(max(S(:,end)-K1,0)-max(S(:,end)-K2,0));
 
 % Bullspread delta defined
 option_delta = @(S) blsdelta(S,K1,rate,T,volatility)-blsdelta(S,K2,rate,T,volatility);
