@@ -45,10 +45,10 @@ function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, 
             r0 = 0.05;
             sigma0 = 0.3;
             
-            gm = i*exp(r0*T);
+            gm = i*exp(integral(rate,0,T));
             gv = gm^2*(exp(sigma0^2*T)-1);
         else
-            gm = i*exp(rate*T);
+            gm = i*exp(0.0649);%exp(rate*T);                 
             gv = gm^2*(exp(volatility^2*T)-1);
         end
         S = zeros(M, Nsteps+1);

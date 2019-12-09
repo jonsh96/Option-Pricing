@@ -40,11 +40,15 @@ function DistributionComparison
         end
     end
 
+    
+    [mu_act, sig_act] = normfit(log(S_act(:,end)))
+    [mu_est, sig_est] = normfit(S_est(:,end))
+    
     % Comparing the distributions
-    h_act = histfit(S_act(:,end),100,'lognormal')
+    h_act = histfit(S_act(:,end),100,'lognormal');
     set(h_act(1),'facecolor','b'); set(h_act(2),'color','k')
     hold on
-    h_est = histfit(S_est(:,end),100)
+    h_est = histfit(S_est(:,end),100);
     set(h_est(1),'facecolor','r'); set(h_est(2),'color','k')
     grid on
     legend('Actual distribution', 'Actual lognormal pdf fit', 'Estimated distribution', 'Estimated normal pdf fit', 'FontSize',14)

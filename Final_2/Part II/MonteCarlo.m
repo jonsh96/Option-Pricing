@@ -8,7 +8,8 @@ function [times, prices, variances, sample_sizes] = MonteCarlo(K, Smin, Smax, ra
     %   - volatility:       Volatility (constant or local volatility model, i.e., a function_handle)
     %   - dt:               Size of time step (in years)
     %   - T:                Time to maturity (in years)
-    %   - M:                Number of Monte Carlo simulations
+    %   - M:                Number of Monte Carlo simulations, value or
+    %                       array of (sample sizes)
     %   - option_payoff:    Payoff of the option (function_handle)
     %   - barrier:          Value of barrier price
     %
@@ -29,14 +30,25 @@ function [times, prices, variances, sample_sizes] = MonteCarlo(K, Smin, Smax, ra
     variances = zeros(3,Smax);
     times = zeros(3,1);
     sample_sizes = zeros(3, Smax);
-
-    % Naive method
-    [times(1), prices(1,:), variances(1,:), sample_sizes(1,:)] = NaiveMethod(Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier);
+    M
     
-    % Antithetic variance reduction
-    [times(2), prices(2,:), variances(2,:), sample_sizes(2,:)] = AntitheticVarianceReduction(Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier);
+    if(size(M,2) == 1)
+        % Naive method
+        [times(1), prices(1,:), variances(1,:), sample_sizes(1,:)] = NaiveMethod(Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier);
 
-    % Control variates
-    [times(3), prices(3,:), variances(3,:), sample_sizes(3,:)] = ControlVariates(Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier);
+        % Antithetic variance reduction
+        [times(2), prices(2,:), variances(2,:), sample_sizes(2,:)] = AntitheticVarianceReduction(Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier);
+
+        % Control variates
+        [times(3), prices(3,:), variances(3,:), sample_sizes(3,:)] = ControlVariates(Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier);
+    else
+        % Naive method
+        [times(1), prices(1,:), variances(1,:), sample_sizes(1,:)] = NaiveMethod(Smin, Smax, rate, volatility, dt, T, M(1), option_payoff, barrier);
     
+        % Antithetic variance reduction
+        [times(2), prices(2,:), variances(2,:), sample_sizes(2,:)] = AntitheticVarianceReduction(Smin, Smax, rate, volatility, dt, T, M(2), option_payoff, barrier);
+
+        % Control variates
+        [times(3), prices(3,:), variances(3,:), sample_sizes(3,:)] = ControlVariates(Smin, Smax, rate, volatility, dt, T, M(3), option_payoff, barrier);
+
 end

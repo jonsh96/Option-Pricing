@@ -4,19 +4,31 @@ SetParameters;
 %% Plotting the local volatility model
 PlotVolatility(Smin, Smax, T, volatility);
 
-%% Local volatility and stoch. interest rates
+%% Local volatility and time-dependent interest rates
+% To get the sample sizes
 fprintf("Pricing a put option with local volatility and time-dependent interest rates\n")
 [times, prices, variances, sample_sizes] = MonteCarlo(K, Smin, Smax, rate, volatility, dt, T, M, put_payoff, 0);
 PlotMonteCarlo(Smin, Smax, prices, 0);
 PrintResults(times, variances, sample_sizes)
 PlotSampleSizes(Smin, Smax, sample_sizes, 0);
 
-%% Constant volatility and interest rates
-fprintf("\nPricing a put option with constant volatility and interest rates\n")
-[times, prices, variances, sample_sizes] = MonteCarlo(K, Smin, Smax, r(1), sigma(1), dt, T, M, put_payoff, 0);
+%% Local volatility and time-dependent interest rates
+% With the corresponding sample sizes
+fprintf("Pricing a put option with local volatility and time-dependent interest rates\n")
+[times, prices, variances, sample_sizes] = MonteCarlo(K, Smin, Smax, rate, volatility, dt, T, max(ceil(sample_sizes')), put_payoff, 0);
 PlotMonteCarlo(Smin, Smax, prices, 0);
 PrintResults(times, variances, sample_sizes)
 PlotSampleSizes(Smin, Smax, sample_sizes, 0);
+
+%% Constant volatility and interest rates
+fprintf("\nPricing a put option with constant volatility and interest rates\n")
+[times, prices, variances, sample_sizes] = MonteCarlo(K, Smin, Smax, r(1), sigma(1), dt, T, max(ceil(sample_sizes')), put_payoff, 0);
+PlotMonteCarlo(Smin, Smax, prices, 0);
+PrintResults(times, variances, sample_sizes)
+PlotSampleSizes(Smin, Smax, sample_sizes, 0);
+
+%% Comparing the distribution of our geometric Brownian model and the assumption made in control variates
+DistributionComparison;
 
 %% PRICING A DOWN AND OUT BARRIER PUT OPTION
 %% Local volatility and stoch. interest rates
