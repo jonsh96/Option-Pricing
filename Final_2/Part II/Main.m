@@ -5,22 +5,22 @@ SetParameters;
 PlotVolatility(Smin, Smax, T, volatility);
 
 %% Local volatility and stoch. interest rates
-fprintf("Pricing a put option with local volatility and stochastic interest rates\n")
+fprintf("Pricing a put option with local volatility and time-dependent interest rates\n")
 [times, prices, variances, sample_sizes] = MonteCarlo(K, Smin, Smax, rate, volatility, dt, T, M, put_payoff, 0);
-PlotMonteCarlo(Smin, Smax, prices, barrier);
+PlotMonteCarlo(Smin, Smax, prices, 0);
 PrintResults(times, variances, sample_sizes)
-PlotSampleSizes(Smin, Smax, sample_sizes, barrier);
+PlotSampleSizes(Smin, Smax, sample_sizes, 0);
 
 %% Constant volatility and interest rates
 fprintf("\nPricing a put option with constant volatility and interest rates\n")
 [times, prices, variances, sample_sizes] = MonteCarlo(K, Smin, Smax, r(1), sigma(1), dt, T, M, put_payoff, 0);
-PlotMonteCarlo(Smin, Smax, prices, barrier);
+PlotMonteCarlo(Smin, Smax, prices, 0);
 PrintResults(times, variances, sample_sizes)
-PlotSampleSizes(Smin, Smax, sample_sizes, barrier);
+PlotSampleSizes(Smin, Smax, sample_sizes, 0);
 
 %% PRICING A DOWN AND OUT BARRIER PUT OPTION
 %% Local volatility and stoch. interest rates
-fprintf("\nPricing a down and out barrier put option with local volatility and stochastic interest rates\n")
+fprintf("\nPricing a down and out barrier put option with local volatility and time-dependent interest rates\n")
 [times, prices, variances, sample_sizes] = MonteCarlo(K, Smin, Smax, rate, volatility, dt, T, M, barrier_payoff, barrier);
 PlotMonteCarlo(Smin, Smax, prices, barrier);
 PrintResults(times, variances, sample_sizes)

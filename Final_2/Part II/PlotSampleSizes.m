@@ -5,7 +5,7 @@ function PlotSampleSizes(Smin, Smax, sample_sizes, barrier)
     
     figure
     for i = 1:3
-        plot(sample_sizes(i,:))
+        plot(sample_sizes(i,:),'LineWidth',1.5)
         hold on
     end
     grid on

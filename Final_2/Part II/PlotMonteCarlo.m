@@ -14,10 +14,10 @@ function PlotMonteCarlo(Smin, Smax, prices, barrier)
     col={'o', 'd', '+', '*'};   
     figure
     for i = 1:3
-        plot(max(Smin,barrier):Smax,prices(i,max(Smin,barrier):Smax),col{i})
+        plot(Smin:Smax,prices(i,Smin:Smax),col{i},'LineWidth',1.5)
         hold on
     end
-    xlim([max(Smin,barrier), Smax])
+    xlim([barrier, Smax])
     grid on
     xlabel('Stock price (£)','FontSize',14)
     ylabel('Option price (£)','FontSize',14)

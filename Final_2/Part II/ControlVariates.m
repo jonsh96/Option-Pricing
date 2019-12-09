@@ -1,4 +1,3 @@
-%% TODO: FIX FOR PART II
 function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier)
     % INPUTS:
     %   - K1:               Lower strike price of the bull call spread
@@ -28,7 +27,7 @@ function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, 
     % Function handle used to calculate the number simulations required for
     % the desired accuracy of error < 0.05 pounds with a 95% accuracy
     confidence_sample = @(v) (sqrt(v).*1.96/0.05).^2;
-        
+       
     % Defining the number of time steps 
     Nsteps = T/dt;
     
@@ -40,11 +39,14 @@ function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, 
     start = cputime;
     g = @(S) S;
     for i = 1:Smax
-        if(isa(rate,'function_handle') && isa(volatility,'function_handle'))
-            gm = g(i)*exp(integral(rate,0,T));
+        if(isa(rate,'function_handle'))
             % Couldn't find a neat way to include sigma as an input so here
             % I had to hardcode sigma = 0.3 into the variance
-            gv = gm^2*(exp(0.3^2*T)-1);     
+            r0 = 0.05;
+            sigma0 = 0.3;
+            
+            gm = i*exp(r0*T);
+            gv = gm^2*(exp(sigma0^2*T)-1);
         else
             gm = i*exp(rate*T);
             gv = gm^2*(exp(volatility^2*T)-1);

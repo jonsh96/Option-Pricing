@@ -1,3 +1,4 @@
+%% TODO: FIX FOR PART II
 function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, rate, volatility, dt, T, M, option_payoff, barrier)
     % INPUTS:
     %   - K1:               Lower strike price of the bull call spread
@@ -11,7 +12,6 @@ function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, 
     %   - M:                Number of Monte Carlo simulations
     %   - option_payoff:    Payoff of the option (function_handle)
     %   - option_price:     Black-Scholes price of the option (function_handle)
-    %   - barrier:          Barrier price (used in part II)
     %
     % OUTPUTS:
     %   - times:            CPU times required to run each of the methods
@@ -29,6 +29,8 @@ function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, 
     % the desired accuracy of error < 0.05 pounds with a 95% accuracy
     confidence_sample = @(v) (sqrt(v).*1.96/0.05).^2;
         
+    
+
     % Defining the number of time steps 
     Nsteps = T/dt;
     
@@ -39,41 +41,34 @@ function [times, prices, variances, sample_sizes] = ControlVariates(Smin, Smax, 
     
     start = cputime;
     g = @(S) S;
-    f = @(S) option_payoff(S);
-
     for i = 1:Smax
-%         if(isa(rate,'function_handle'))
-%             gm = i*exp(0.05*T);
-%             % Couldn't find a neat way to include sigma as an input so here
-%             % I had to hardcode sigma = 0.3 into the variance
-%             gv = gm^2*(exp(0.3^2*T)-1);
-%         else
-%             gm = i*exp(rate*T);
-%             gv = gm^2*(exp(volatility^2*T)-1);
-%         end
-%         
-        if(isa(rate,'function_handle'))
+        if(isa(rate,'function_handle') && isa(volatility,'function_handle'))
+            gm = g(i)*exp(0.05*T);
             % Couldn't find a neat way to include sigma as an input so here
             % I had to hardcode sigma = 0.3 into the variance
-            rate = 0.05;
-            volatility = 0.3;
+            gv = gm^2*(exp(0.3^2*T)-1);     
+        else
+            gm = i*exp(rate*T);
+            gv = gm^2*(exp(volatility^2*T)-1);
         end
-        gm = i*exp(rate*T);
-        gv = gm^2*(exp(volatility^2*T)-1);
-        
         S = zeros(M, Nsteps+1);
         Splus = zeros(M, Nsteps+1);
         Sminus = zeros(M, Nsteps+1);
-        
         for j = 1:M
             [S(j,:), Splus(j,:), Sminus(j,:)] = GeometricBrownianMotion(i,rate,volatility,dt,T);
         end
-        covariance_matrix = cov(f(S(:,end)),S(:,end));
-        c = covariance_matrix(1,2)/gv;
-        fc = f(S(:,end))-c*(g(S(:,end))-gm);
+        if(nargin(option_payoff) == 1)
+            covariance_matrix = cov(option_payoff(S),S(:,end));
+            c = covariance_matrix(1,2)/gv;        
+            fc = option_payoff(S)-c*(g(S(:,end))-gm);
+        else
+            covariance_matrix = cov(option_payoff(S,barrier),S(:,end));
+            c = covariance_matrix(1,2)/gv;        
+            fc = option_payoff(S,barrier)-c*(g(S(:,end))-gm);    
+        end
         prices(1,i) = mean(fc);
         variances(1,i) = var(fc);
     end
     sample_sizes(1,:) = confidence_sample(variances(1,:));
     times = (cputime-start)/Smax;
-end    
+end
