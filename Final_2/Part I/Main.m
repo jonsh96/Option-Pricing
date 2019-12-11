@@ -2,10 +2,16 @@
 SetParameters;
 
 %% Calculate the option prices numerically and with Black-Scholes
-[V_PDE, S_PDE] = PDE_bullspread(K1, K2, T, rate, volatility, Smin, Smax, N, J);
+[V_PDE, S_PDE, time] = PDE_bullspread(K1, K2, T, rate, volatility, Smin, Smax, N, J);
 V_BS = option_price(S_PDE); 
 error_PDE = norm(V_PDE-V_BS,Inf);
 
+%% Time average
+start = cputime;
+for i = 1:1000
+    [V_PDE, S_PDE] = PDE_bullspread(K1, K2, T, rate, volatility, Smin, Smax, N, J);
+end
+time = (cputime - start)/1000
 %% Surface plot of the maximum absolute error
 ErrorSurfacePlot(Smin, Smax, K1, K2, T, rate, volatility, option_price);
 
