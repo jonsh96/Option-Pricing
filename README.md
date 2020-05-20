@@ -1,5 +1,6 @@
 # Option Pricing
 ## Final project in Numerical Methods and Programming (MA9070) 2019-2010
+### (Final grade 84%, 1/22)
 # Part I: Pricing a Vertical Spread (50%)
 - Pricing and calculating the delta a bull call spread by solving the Black Scholes PDE and using four Monte Carlo variance reduction methods.
 # Part II: Pricing a Barrier Option (50%)
